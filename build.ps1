@@ -1,34 +1,31 @@
+function Print-Banner {
+
+    param (
+        $Stage, $PhaseName
+    )
+
+    Write-Output ""
+    Write-Output "[$Stage][$PhaseName]"
+    Write-Output ""
+
+}
+
 Write-Output "[---------------------- TODOS ----------------------]"
 
-Write-Output ""
-Write-Output "[CLEAN]"
-Write-Output ""
-
+Print-Banner -Stage "FLUTTER" -PhaseName "CLEAN"
 flutter clean
 
-Write-Output ""
-Write-Output "[DEPENDENCIES]"
-Write-Output ""
-
+Print-Banner -Stage "FLUTTER" -PhaseName "DEPENDENCIES"
 flutter pub get
 
-Write-Output ""
-Write-Output "[BUILD]"
-Write-Output ""
-
+Print-Banner -Stage "FLUTTER" -PhaseName "BUILD"
 flutter build web
 
-Write-Output ""
-Write-Output "[DOCKER LOGIN]"
-Write-Output ""
+Print-Banner -Stage "DOCKER" -PhaseName "LOGIN"
 docker login
 
-Write-Output ""
-Write-Output "[DOCKER BUILD]"
-Write-Output ""
+Print-Banner -Stage "DOCKER" -PhaseName "BUILD"
 docker build -t flutter-todos-web .
 
-Write-Output ""
-Write-Output "[DOCKER RUN]"
-Write-Output ""
+Print-Banner -Stage "DOCKER" -PhaseName "RUN"
 docker run -d -p 8080:80 --name todos-web flutter-todos-web
