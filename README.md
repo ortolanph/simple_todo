@@ -1,16 +1,27 @@
 # simple_todo
 
-A new Flutter project.
+A (not so) simple todo made in flutter that will be deployed into a docker Container.
 
-## Getting Started
+## Requirements
 
-This project is a starting point for a Flutter application.
+* Flutter
+* Docker
 
-A few resources to get you started if this is your first Flutter project:
+## How to build
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+On a command line, type the following commands: 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```shell
+flutter clean
+flutter pub get
+flutter build web
+docker login
+docker build -t flutter-todos-web .
+docker run -d -p 8080:80 --name todos-web flutter-todos-web
+```
+
+Or, in Windows:
+
+```powershell
+.\build.ps1
+```
