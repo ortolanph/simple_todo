@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
 
                         _todoRepository.add(todo);
 
-                        setState(() {
+                         setState(() {
                           newTodoController.text = "";
                         });
                       },

@@ -25,3 +25,20 @@ Or, in Windows:
 ```powershell
 .\build.ps1
 ```
+
+## Kubernetes
+
+1. Install [kind](https://kind.sigs.k8s.io/)
+2. With the docker image built, run the following command:
+
+```
+kind load docker-image flutter-todos-web --name todos-cluster
+```
+
+3. Run the `kubectl` to create the new infra:
+
+```
+kubectl create -f .\simple-todo-k8.yaml
+```
+
+4. Open a browser and access the [simple todo web](http://localhost:8081) address
