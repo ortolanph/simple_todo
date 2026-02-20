@@ -27,6 +27,5 @@ extension TodoTypographyExtension on TodoTypography {
           color: Colors.grey,
         );
     }
-    return null;
   }
 }

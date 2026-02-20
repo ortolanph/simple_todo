@@ -5,7 +5,7 @@ import '../data/todo.dart';
 import 'hive_service.dart';
 
 class TodoRepository {
-  HiveService _hiveService;
+  final HiveService _hiveService;
   Logger logger = Logger("todo_repository");
 
   TodoRepository(HiveService hiveService) : _hiveService = hiveService;

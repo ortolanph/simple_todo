@@ -9,10 +9,10 @@ import '../data/todo.dart';
 
 class TodoWidget extends StatefulWidget {
   const TodoWidget({
-    Key? key,
+    super.key,
     required this.todo,
     required this.todoIndex,
-  }) : super(key: key);
+  });
 
   final Todo todo;
   final int todoIndex;

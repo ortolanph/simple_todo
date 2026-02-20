@@ -8,11 +8,11 @@ part 'todo.g.dart';
 @JsonSerializable()
 class Todo with EquatableMixin {
   @HiveField(0)
-  String id;
+  final String id;
   @HiveField(1)
-  String task;
+  final String task;
   @HiveField(2)
-  bool done;
+  late final bool done;
 
   Todo({
     required this.id,

@@ -6,8 +6,9 @@ import 'package:logging/logging.dart';
 import '../main.dart';
 import '../repository/hive_service.dart';
 
+// ignore_for_file: use_build_context_synchronously
 class LoadingPage extends StatefulWidget {
-  const LoadingPage({Key? key}) : super(key: key);
+  const LoadingPage({super.key});
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();

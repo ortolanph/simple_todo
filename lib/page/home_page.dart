@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 import '../main.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
 
                         _todoRepository.add(todo);
 
-                         setState(() {
+                        setState(() {
                           newTodoController.text = "";
                         });
                       },
