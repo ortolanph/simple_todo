@@ -1,6 +1,10 @@
 services:
   simple_todo_app:
     container_name: parser_batch
+    # Download from docker hub
+    # image: simple_todo:1.0.0 
+    # Use local image
+    build: .
     env_file:
       - .env
     ports:
