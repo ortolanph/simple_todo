@@ -26,7 +26,7 @@ fix: analyze
 	dart fix --apply
 
 build: clean compile
-	flutter build web --base-href / --dart-define="ENVIRONMENT=pro"
+	flutter build web --base-href /
 
 docker-build:
 	docker login

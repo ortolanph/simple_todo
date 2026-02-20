@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
+import 'package:printing/printing.dart';
 import 'package:simple_todo/data/todo.dart';
 import 'package:simple_todo/repository/todo_repository.dart';
 import 'package:simple_todo/style/todo_styles.dart';
+import 'package:simple_todo/utils/pdf_creator.dart';
 import 'package:simple_todo/widget/todo_widget.dart';
 import 'package:uuid/uuid.dart';
 
@@ -38,12 +40,45 @@ class _HomePageState extends State<HomePage> {
               _todoRepository.deleteAll();
             },
             icon: const Icon(Icons.cleaning_services_rounded),
+            tooltip: "Add a new task",
+          ),
+          IconButton(
+            onPressed: () async {
+              logger.info("Generating PDF");
+              final pdf = await generatePDFReport(_todoRepository.box.values.toList());
+
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('PDF Preview'),
+                  content: Container(
+                    width: double.maxFinite,
+                    height: 400,
+                    child: PdfPreview(
+                      build: (format) => pdf.save(),
+                      allowPrinting: true, // Disable direct printing if needed
+                      allowSharing: true, // Enable sharing
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Close'),
+                    ),
+                  ],
+                ),
+              );
+
+            },
+            icon: const FaIcon(FontAwesomeIcons.filePdf),
+            tooltip: "Generate PDF",
           ),
           IconButton(
             onPressed: () {
-              logger.info("Fill form to get a new licence");
+              logger.info("Generating CSV");
             },
-            icon: const FaIcon(FontAwesomeIcons.file),
+            icon: const FaIcon(FontAwesomeIcons.fileCsv),
+            tooltip: "Generating CSV",
           ),
         ],
       ),

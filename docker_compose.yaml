@@ -5,13 +5,8 @@ services:
     # image: simple_todo:1.0.0 
     # Use local image
     build: .
-    env_file:
-      - .env
     ports:
       - "${APP_PORT}:8080"
-    environment:
-      LICENSED_TO: ${LICENSED_TO}
-      LICENSE_KEY: ${LICENSE_KEY}
     networks:
       - simple_todo_network
 

@@ -29,13 +29,15 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blue[900],
-        body: const Center(
-            child: SpinKitPianoWave(
+      backgroundColor: Colors.blue[900],
+      body: const Center(
+        child: SpinKitPianoWave(
           color: Colors.white,
           itemCount: 7,
           type: SpinKitPianoWaveType.center,
-        )));
+        ),
+      ),
+    );
   }
 
   void load() async {
