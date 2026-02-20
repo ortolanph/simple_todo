@@ -52,22 +52,30 @@ pw.Widget _buildHeader() {
 
 pw.Widget _buildTaskRow(Todo todo) {
   return pw.Container(
-    child: pw.Row(
-      children: [
-        pw.Container(
-          width: 10,
-          height: 10,
-          decoration: pw.BoxDecoration(
-            color: PdfColors.white,
-            border: pw.Border.all(
-              color: PdfColors.black,
-              width: 1.5,
+    child: pw.Padding(
+      padding: pw.EdgeInsets.symmetric(vertical: 10),
+      child: pw.Row(
+        children: [
+          pw.Container(
+            width: 10,
+            height: 10,
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              border: pw.Border.all(
+                color: PdfColors.black,
+                width: 1.5,
+              ),
             ),
           ),
-        ),
-        pw.SizedBox(width: 20),
-        pw.Text(todo.task),
-      ],
+          pw.SizedBox(width: 10),
+          pw.Text(
+            todo.task,
+            style: pw.TextStyle(
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

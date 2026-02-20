@@ -1,4 +1,6 @@
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
@@ -45,18 +47,20 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               logger.info("Generating PDF");
-              final pdf = await generatePDFReport(_todoRepository.box.values.toList());
+              final pdf =
+                  await generatePDFReport(_todoRepository.box.values.toList());
 
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: Text('PDF Preview'),
-                  content: Container(
+                  content: SizedBox(
                     width: double.maxFinite,
                     height: 400,
                     child: PdfPreview(
                       build: (format) => pdf.save(),
-                      allowPrinting: true, // Disable direct printing if needed
+                      allowPrinting: true,
+                      // Disable direct printing if needed
                       allowSharing: true, // Enable sharing
                     ),
                   ),
@@ -68,7 +72,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               );
-
             },
             icon: const FaIcon(FontAwesomeIcons.filePdf),
             tooltip: "Generate PDF",
@@ -76,6 +79,27 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () {
               logger.info("Generating CSV");
+              logger.info("Generating data");
+              final data = _todoRepository.box.values
+                  .map((todo) => [todo.id, todo.task, todo.done])
+                  .toList();
+
+              logger.info("Generating Header");
+              data.insert(0, ["Id", "Task", "Done"]);
+
+              logger.info("Copying to the clipboard");
+              ClipboardData clipboardData =
+                  ClipboardData(text: csv.encode(data));
+              Clipboard.setData(clipboardData);
+
+              final scaffold = ScaffoldMessenger.of(context);
+              scaffold.showSnackBar(
+                SnackBar(
+                  content:
+                      const Text("Tasks copied to clipboard in CSV Format"),
+                  duration: Duration(seconds: 10),
+                ),
+              );
             },
             icon: const FaIcon(FontAwesomeIcons.fileCsv),
             tooltip: "Generating CSV",

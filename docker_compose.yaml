@@ -2,11 +2,11 @@ services:
   simple_todo_app:
     container_name: parser_batch
     # Download from docker hub
-    # image: simple_todo:1.0.0 
+    # image: ortolanph/simple_todos:1.0.0
     # Use local image
     build: .
     ports:
-      - "${APP_PORT}:8080"
+      - "10138:8080"
     networks:
       - simple_todo_network
 

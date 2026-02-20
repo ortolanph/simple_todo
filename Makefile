@@ -16,7 +16,7 @@ clean:
 dependencies:
 	dart pub get
 
-compile: clean
+compile: clean dependencies
 	dart run build_runner build -d
 
 analyze:
@@ -28,9 +28,9 @@ fix: analyze
 build: clean compile
 	flutter build web --base-href /
 
-docker-build:
+docker-build: build
 	docker login
 	docker build -t flutter-todos-web .
 
-docker-run:
+docker-run: build
 	docker run -d -p 8080:80 --name todos-web flutter-todos-web

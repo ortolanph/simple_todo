@@ -42,7 +42,7 @@ class _TodoWidgetState extends State<TodoWidget> {
         children: [
           Checkbox(
             value: checkBoxValue,
-            onChanged: (bool? value) {
+            onChanged: (bool? value) async {
               logger.info("Changed the value to $value");
 
               setState(() {
@@ -50,7 +50,7 @@ class _TodoWidgetState extends State<TodoWidget> {
               });
 
               widget.todo.done = checkBoxValue;
-              _repository.update(widget.todoIndex, widget.todo);
+              await _repository.update(widget.todoIndex, widget.todo);
             },
           ),
           Padding(

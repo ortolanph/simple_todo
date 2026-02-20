@@ -11,14 +11,22 @@ class Todo with EquatableMixin {
   final String id;
   @HiveField(1)
   final String task;
-  @HiveField(2)
-  late final bool done;
+  @HiveField(2, defaultValue: false)
+  bool done;
 
   Todo({
     required this.id,
     required this.task,
     required this.done,
   });
+
+  Todo copyWith({bool? done}) {
+    return Todo(
+      id: id,
+      task: task,
+      done: done ?? this.done,
+    );
+  }
 
   factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 

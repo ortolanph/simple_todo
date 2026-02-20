@@ -19,7 +19,7 @@ class TodoAdapter extends TypeAdapter<Todo> {
     return Todo(
       id: fields[0] as String,
       task: fields[1] as String,
-      done: fields[2] as bool,
+      done: fields[2] == null ? false : fields[2] as bool,
     );
   }
 
