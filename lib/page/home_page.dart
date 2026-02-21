@@ -1,16 +1,17 @@
-import 'package:csv/csv.dart';
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:printing/printing.dart';
 import 'package:simple_todo/data/todo.dart';
 import 'package:simple_todo/repository/todo_repository.dart';
 import 'package:simple_todo/style/todo_styles.dart';
-import 'package:simple_todo/utils/pdf_creator.dart';
+import 'package:simple_todo/utils/report_creator.dart';
 import 'package:simple_todo/widget/todo_widget.dart';
 import 'package:uuid/uuid.dart';
+import 'package:web/web.dart' as web;
 
 import '../main.dart';
 
@@ -48,30 +49,15 @@ class _HomePageState extends State<HomePage> {
             onPressed: () async {
               logger.info("Generating PDF");
               final pdf =
-                  await generatePDFReport(_todoRepository.box.values.toList());
+                  generatePDFReport(_todoRepository.box.values.toList());
 
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('PDF Preview'),
-                  content: SizedBox(
-                    width: double.maxFinite,
-                    height: 400,
-                    child: PdfPreview(
-                      build: (format) => pdf.save(),
-                      allowPrinting: true,
-                      // Disable direct printing if needed
-                      allowSharing: true, // Enable sharing
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('Close'),
-                    ),
-                  ],
-                ),
-              );
+              final pdfBytes = await pdf.save();
+              final timeStamp = dateFormat.format(DateTime.now());
+              final fileName = "todos_$timeStamp.pdf";
+              final mimeType = "application/pdf";
+
+              downloadFile(pdfBytes, mimeType, fileName);
+              showSnackBar(context, "PDF File Generated with success");
             },
             icon: const FaIcon(FontAwesomeIcons.filePdf),
             tooltip: "Generate PDF",
@@ -79,27 +65,16 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () {
               logger.info("Generating CSV");
-              logger.info("Generating data");
-              final data = _todoRepository.box.values
-                  .map((todo) => [todo.id, todo.task, todo.done])
-                  .toList();
 
-              logger.info("Generating Header");
-              data.insert(0, ["Id", "Task", "Done"]);
+              final csvBytes =
+                  csvGenerator(_todoRepository.box.values.toList());
+              final timeStamp = dateFormat.format(DateTime.now());
+              final fileName = "todos_$timeStamp.csv";
+              final mimeType = "text/csv";
 
-              logger.info("Copying to the clipboard");
-              ClipboardData clipboardData =
-                  ClipboardData(text: csv.encode(data));
-              Clipboard.setData(clipboardData);
+              downloadFile(csvBytes, mimeType, fileName);
 
-              final scaffold = ScaffoldMessenger.of(context);
-              scaffold.showSnackBar(
-                SnackBar(
-                  content:
-                      const Text("Tasks copied to clipboard in CSV Format"),
-                  duration: Duration(seconds: 10),
-                ),
-              );
+              showSnackBar(context, "CSV File Generated with success");
             },
             icon: const FaIcon(FontAwesomeIcons.fileCsv),
             tooltip: "Generating CSV",
@@ -154,5 +129,32 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 5),
+      ),
+    );
+  }
+
+  void downloadFile(Uint8List pdfBytes, String mimeType, String fileName) {
+    final blob = web.Blob(
+      [pdfBytes.buffer.toJS].toJS,
+      web.BlobPropertyBag(type: '$mimeType;charset=utf-8;'),
+    );
+
+    final url = web.URL.createObjectURL(blob);
+
+    // Create a temporary <a> and click it
+    final anchor = web.document.createElement('a') as web.HTMLAnchorElement
+      ..href = url
+      ..setAttribute('download', fileName)
+      ..click();
+
+    web.URL.revokeObjectURL(url);
   }
 }
