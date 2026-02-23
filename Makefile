@@ -12,7 +12,6 @@ help:
 	@echo "  docker-run     - Runs a local docker image"
 	@echo "  docker-publish - Publishes a new version of the image on docker hub"
 
-
 clean:
 	flutter clean cache
 	flutter clean
@@ -44,14 +43,15 @@ check_next_version:
 		echo "Next version will be $(NEXT_VERSION)"; \
 	else \
 		echo "NEXT_VERSION is empty, aborting."; \
-		echo "Run; make docker-publish 1.0.0"; \
+		echo "Run; make docker-publish NEXT_VERSION=1.0.0"; \
 		exit 1; \
 	fi
 
 docker-publish: check_next_version
 	docker login
-	docker build -t simple_todos:${NEXT_VERSION} .
-	docker tag simple_todos:${NEXT_VERSION} ortolanph/simple_todos:${NEXT_VERSION}
-	docker tag simple_todos:${NEXT_VERSION} ortolanph/simple_todos:latest
-	docker push ortolanph/simple_todos:${NEXT_VERSION}
+	git tag $(NEXT_VERSION)
+	docker build -t simple_todos:$(NEXT_VERSION) .
+	docker tag simple_todos:$(NEXT_VERSION) ortolanph/simple_todos:$(NEXT_VERSION)
+	docker tag simple_todos:$(NEXT_VERSION) ortolanph/simple_todos:latest
+	docker push ortolanph/simple_todos:$(NEXT_VERSION)
 	docker push ortolanph/simple_todos:latest
