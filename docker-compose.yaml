@@ -1,7 +1,6 @@
 services:
   simple_todo_app:
-    container_name: simple_todo_application
-    # Download from docker hub
+    container_name: simple_todos_application
     image: ortolanph/simple_todos:1.0.0
     # Use local image
     # build: .
