@@ -51,7 +51,8 @@ class ExcelReportCreator implements ReportCreator {
     TextCellValue headerTodoCellValue = TextCellValue("Todo");
     TextCellValue headerDoneCellValue = TextCellValue("Done");
 
-    excel.appendRow(sheet, [headerIdCellValue, headerTodoCellValue, headerDoneCellValue]);
+    excel.appendRow(
+        sheet, [headerIdCellValue, headerTodoCellValue, headerDoneCellValue]);
 
     var headerIdCell = excel[sheet].cell(CellIndex.indexByString("A3"));
     headerIdCell.cellStyle = headerStyle;
@@ -61,7 +62,6 @@ class ExcelReportCreator implements ReportCreator {
 
     var headerDoneCell = excel[sheet].cell(CellIndex.indexByString("C3"));
     headerDoneCell.cellStyle = headerStyle;
-
 
     int rowIndex = 4;
 
@@ -75,7 +75,8 @@ class ExcelReportCreator implements ReportCreator {
 
       for (var letter in ["A", "B", "C"]) {
         var contentCellString = "$letter$rowIndex";
-        var contentCell = excel[sheet].cell(CellIndex.indexByString(contentCellString));
+        var contentCell =
+            excel[sheet].cell(CellIndex.indexByString(contentCellString));
         contentCell.cellStyle = dataStyle;
       }
 

@@ -1,11 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
-import 'package:simple_todo/data/todo.dart';
-import 'package:simple_todo/utils/report_creator.dart';
-
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:simple_todo/data/todo.dart';
+import 'package:simple_todo/utils/report_creator.dart';
 
 class PdfReportCreator extends ReportCreator {
   Logger logger = Logger("pdf_report_creator");
@@ -35,7 +34,7 @@ class PdfReportCreator extends ReportCreator {
                       child: pw.Column(
                         children: List.generate(
                           undone.length,
-                              (u) => _buildTaskRow(undone[u]),
+                          (u) => _buildTaskRow(undone[u]),
                         ),
                       ),
                     ),
@@ -97,5 +96,4 @@ class PdfReportCreator extends ReportCreator {
       ),
     );
   }
-
 }

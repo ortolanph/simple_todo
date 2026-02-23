@@ -20,5 +20,4 @@ class CsvReportCreator implements ReportCreator {
 
     return utf8.encode(csv.encode(data));
   }
-  
 }

@@ -15,6 +15,7 @@ import 'package:web/web.dart' as web;
 
 import '../main.dart';
 
+// ignore_for_file: use_build_context_synchronously
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -162,7 +163,7 @@ class _HomePageState extends State<HomePage> {
     final url = web.URL.createObjectURL(blob);
 
     // Create a temporary <a> and click it
-    final anchor = web.document.createElement('a') as web.HTMLAnchorElement
+    web.document.createElement('a') as web.HTMLAnchorElement
       ..href = url
       ..setAttribute('download', fileName)
       ..click();

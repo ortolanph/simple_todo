@@ -6,6 +6,7 @@ part 'todo.g.dart';
 
 @HiveType(typeId: 0)
 @JsonSerializable()
+// ignore_for_file: must_be_immutable
 class Todo with EquatableMixin {
   @HiveField(0)
   final String id;
