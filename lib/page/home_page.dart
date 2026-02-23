@@ -8,6 +8,8 @@ import 'package:logging/logging.dart';
 import 'package:simple_todo/data/todo.dart';
 import 'package:simple_todo/repository/todo_repository.dart';
 import 'package:simple_todo/style/todo_styles.dart';
+import 'package:simple_todo/utils/csv_report_creator.dart';
+import 'package:simple_todo/utils/pdf_report_creator.dart';
 import 'package:simple_todo/utils/report_creator.dart';
 import 'package:simple_todo/widget/todo_widget.dart';
 import 'package:uuid/uuid.dart';
@@ -25,6 +27,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Logger logger = Logger("home_page");
   final TodoRepository _todoRepository = autoInjector.get<TodoRepository>();
+
+  final ReportCreator pdfReportCreator = PdfReportCreator();
+  final ReportCreator csvReportCreator = CsvReportCreator();
 
   TextEditingController newTodoController = TextEditingController(text: "");
 
@@ -49,25 +54,24 @@ class _HomePageState extends State<HomePage> {
             onPressed: () async {
               logger.info("Generating PDF");
               final pdf =
-                  generatePDFReport(_todoRepository.box.values.toList());
+                  await pdfReportCreator.generateReport(_todoRepository.box.values.toList());
 
-              final pdfBytes = await pdf.save();
               final timeStamp = dateFormat.format(DateTime.now());
               final fileName = "todos_$timeStamp.pdf";
               final mimeType = "application/pdf";
 
-              downloadFile(pdfBytes, mimeType, fileName);
+              downloadFile(pdf, mimeType, fileName);
               showSnackBar(context, "PDF File Generated with success");
             },
             icon: const FaIcon(FontAwesomeIcons.filePdf),
-            tooltip: "Generate PDF",
+            tooltip: "Export to PDF",
           ),
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               logger.info("Generating CSV");
 
               final csvBytes =
-                  csvGenerator(_todoRepository.box.values.toList());
+                  await csvReportCreator.generateReport(_todoRepository.box.values.toList());
               final timeStamp = dateFormat.format(DateTime.now());
               final fileName = "todos_$timeStamp.csv";
               final mimeType = "text/csv";
@@ -77,7 +81,24 @@ class _HomePageState extends State<HomePage> {
               showSnackBar(context, "CSV File Generated with success");
             },
             icon: const FaIcon(FontAwesomeIcons.fileCsv),
-            tooltip: "Generating CSV",
+            tooltip: "Export to CSV",
+          ),
+          IconButton(
+            onPressed: () {
+              logger.info("Generate Excel");
+
+              // final csvBytes =
+              // csvGenerator(_todoRepository.box.values.toList());
+              // final timeStamp = dateFormat.format(DateTime.now());
+              // final fileName = "todos_$timeStamp.xlsx";
+              // final mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+              //
+              // downloadFile(csvBytes, mimeType, fileName);
+
+              showSnackBar(context, "Unimplemented");
+            },
+            icon: const FaIcon(FontAwesomeIcons.fileCsv),
+            tooltip: "Export to Excel",
           ),
         ],
       ),
