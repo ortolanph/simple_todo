@@ -49,9 +49,9 @@ check_next_version:
 
 docker-publish: check_next_version
 	docker login
-	git tag $(NEXT_VERSION)
 	docker build -t simple_todos:$(NEXT_VERSION) .
 	docker tag simple_todos:$(NEXT_VERSION) ortolanph/simple_todos:$(NEXT_VERSION)
 	docker tag simple_todos:$(NEXT_VERSION) ortolanph/simple_todos:latest
 	docker push ortolanph/simple_todos:$(NEXT_VERSION)
 	docker push ortolanph/simple_todos:latest
+	git tag $(NEXT_VERSION)

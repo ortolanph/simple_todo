@@ -19,3 +19,6 @@ docker tag simple_todos:$versionString ortolanph/simple_todos:latest
 Write-Host "--- Docker Pushing ---"
 docker push ortolanph/simple_todos:$versionString
 docker push ortolanph/simple_todos:latest
+
+Write-Host "--- Creating git tag ---"
+git tag $versionString
