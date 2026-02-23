@@ -8,9 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:simple_todo/data/todo.dart';
 import 'package:simple_todo/repository/todo_repository.dart';
 import 'package:simple_todo/style/todo_styles.dart';
-import 'package:simple_todo/utils/csv_report_creator.dart';
-import 'package:simple_todo/utils/pdf_report_creator.dart';
-import 'package:simple_todo/utils/report_creator.dart';
+import 'package:simple_todo/utils/report_strategy.dart';
 import 'package:simple_todo/widget/todo_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web/web.dart' as web;
@@ -28,8 +26,7 @@ class _HomePageState extends State<HomePage> {
   Logger logger = Logger("home_page");
   final TodoRepository _todoRepository = autoInjector.get<TodoRepository>();
 
-  final ReportCreator pdfReportCreator = PdfReportCreator();
-  final ReportCreator csvReportCreator = CsvReportCreator();
+  final ReportStrategy reportStrategy = ReportStrategy();
 
   TextEditingController newTodoController = TextEditingController(text: "");
 
@@ -53,14 +50,11 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               logger.info("Generating PDF");
-              final pdf =
-                  await pdfReportCreator.generateReport(_todoRepository.box.values.toList());
+              final pdf = await reportStrategy
+                  .getReportCreator(ReportType.pdf)
+                  .generateReport(_todoRepository.box.values.toList());
 
-              final timeStamp = dateFormat.format(DateTime.now());
-              final fileName = "todos_$timeStamp.pdf";
-              final mimeType = "application/pdf";
-
-              downloadFile(pdf, mimeType, fileName);
+              downloadFile(pdf, ReportType.pdf);
               showSnackBar(context, "PDF File Generated with success");
             },
             icon: const FaIcon(FontAwesomeIcons.filePdf),
@@ -69,14 +63,11 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               logger.info("Generating CSV");
+              final csvBytes = await reportStrategy
+                  .getReportCreator(ReportType.csv)
+                  .generateReport(_todoRepository.box.values.toList());
 
-              final csvBytes =
-                  await csvReportCreator.generateReport(_todoRepository.box.values.toList());
-              final timeStamp = dateFormat.format(DateTime.now());
-              final fileName = "todos_$timeStamp.csv";
-              final mimeType = "text/csv";
-
-              downloadFile(csvBytes, mimeType, fileName);
+              downloadFile(csvBytes, ReportType.csv);
 
               showSnackBar(context, "CSV File Generated with success");
             },
@@ -84,20 +75,17 @@ class _HomePageState extends State<HomePage> {
             tooltip: "Export to CSV",
           ),
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               logger.info("Generate Excel");
+              final excelBytes = await reportStrategy
+                  .getReportCreator(ReportType.excel)
+                  .generateReport(_todoRepository.box.values.toList());
 
-              // final csvBytes =
-              // csvGenerator(_todoRepository.box.values.toList());
-              // final timeStamp = dateFormat.format(DateTime.now());
-              // final fileName = "todos_$timeStamp.xlsx";
-              // final mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-              //
-              // downloadFile(csvBytes, mimeType, fileName);
+              downloadFile(excelBytes, ReportType.excel);
 
               showSnackBar(context, "Unimplemented");
             },
-            icon: const FaIcon(FontAwesomeIcons.fileCsv),
+            icon: const FaIcon(FontAwesomeIcons.fileExcel),
             tooltip: "Export to Excel",
           ),
         ],
@@ -162,10 +150,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void downloadFile(Uint8List pdfBytes, String mimeType, String fileName) {
+  void downloadFile(Uint8List pdfBytes, ReportType reportType) {
+    final timeStamp = dateFormat.format(DateTime.now());
+    final fileName = "todos_$timeStamp.${reportType.extension}";
+
     final blob = web.Blob(
       [pdfBytes.buffer.toJS].toJS,
-      web.BlobPropertyBag(type: '$mimeType;charset=utf-8;'),
+      web.BlobPropertyBag(type: '${reportType.mimeType};charset=utf-8;'),
     );
 
     final url = web.URL.createObjectURL(blob);
