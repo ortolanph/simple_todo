@@ -70,12 +70,12 @@ class PdfReportCreator extends ReportCreator {
     logger.info("Creating task row");
     return pw.Container(
       child: pw.Padding(
-        padding: pw.EdgeInsets.symmetric(vertical: 30),
+        padding: pw.EdgeInsets.symmetric(vertical: 10),
         child: pw.Row(
           children: [
             pw.Container(
-              width: 10,
-              height: 10,
+              width: 20,
+              height: 20,
               decoration: pw.BoxDecoration(
                 color: PdfColors.white,
                 border: pw.Border.all(

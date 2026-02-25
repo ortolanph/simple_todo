@@ -100,22 +100,17 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(10.0),
               child: TextField(
                 controller: newTodoController,
+                onSubmitted: (value) {
+                  logger.info("Adding todo $value");
+                  _createTodo(value);
+                },
                 style: TodoTypography.todoLine.textstyle!,
                 decoration: InputDecoration(
                   hintText: "Input a task to do",
                   suffixIcon: IconButton(
                       onPressed: () {
                         logger.info("Adding todo ${newTodoController.text}");
-                        Todo todo = Todo(
-                            id: const Uuid().v4(),
-                            task: newTodoController.text,
-                            done: false);
-
-                        _todoRepository.add(todo);
-
-                        setState(() {
-                          newTodoController.text = "";
-                        });
+                        _createTodo(newTodoController.text);
                       },
                       icon: const Icon(Icons.add)),
                 ),
@@ -139,6 +134,19 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void _createTodo(String newTask) {
+    Todo todo = Todo(
+        id: const Uuid().v4(),
+        task: newTask,
+        done: false);
+
+    _todoRepository.add(todo);
+
+    setState(() {
+      newTodoController.text = "";
+    });
   }
 
   void showSnackBar(BuildContext context, String message) {
