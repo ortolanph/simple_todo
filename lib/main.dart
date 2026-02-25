@@ -8,7 +8,7 @@ import 'package:simple_todo/repository/hive_service.dart';
 import 'package:simple_todo/repository/todo_repository.dart';
 
 final autoInjector = AutoInjector();
-final DateFormat dateFormat = DateFormat("yyyyddMM");
+final DateFormat dateFormat = DateFormat("yyyyddMM_HHmmss");
 
 // ignore_for_file: avoid_print
 void main() {
