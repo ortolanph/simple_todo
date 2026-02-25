@@ -137,10 +137,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _createTodo(String newTask) {
-    Todo todo = Todo(
-        id: const Uuid().v4(),
-        task: newTask,
-        done: false);
+    Todo todo = Todo(id: const Uuid().v4(), task: newTask, done: false);
 
     _todoRepository.add(todo);
 

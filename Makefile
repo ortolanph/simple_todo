@@ -1,5 +1,9 @@
 .PHONY: clean compile dependencies analyze fix build help
 
+define check_installed
+	@which $(1) > /dev/null 2>&1 || (echo "Error: '$(1)' is not installed" >&2 && exit 1)
+endef
+
 help:
 	@echo "Available targets:"
 	@echo "  clean          - Clean Flutter cache and project"
@@ -11,6 +15,7 @@ help:
 	@echo "  docker-build   - Build a local docker image"
 	@echo "  docker-run     - Runs a local docker image"
 	@echo "  docker-publish - Publishes a new version of the image on docker hub"
+	@echo "  k8s            - Publishes to a local k8s"
 
 clean:
 	flutter clean cache
@@ -55,3 +60,9 @@ docker-publish: check_next_version
 	docker push ortolanph/simple_todos:$(NEXT_VERSION)
 	docker push ortolanph/simple_todos:latest
 	git tag $(NEXT_VERSION)
+
+k8s: docker-build
+	$(call check_installed,kind)
+	kind create cluster --name simple_todos_cluster
+	kind load docker-image simple_todos:local --name simple_todos_cluster
+	kubectl create -f simple_todos-k8.yaml

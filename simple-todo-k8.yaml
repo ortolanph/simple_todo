@@ -1,76 +1,89 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: todos-web-ns
+  name: simple-todos-ns
   labels:
-    name: todos-web-ns
+    name: simple-todos-ns
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  name: todos-web-deployment
-  namespace: todos-web-ns
-  labels:
-    name: todos-web-deployment
+metadata:
+  name: simple-todos-deployment
+  namespace: simple-todos-ns
 spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: todos-web-app
-  replicas: 1
+      app: simple-todos-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       labels:
-        app: todos-web-app
+        app: simple-todos-app
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
-      - name: todos-web-app
-        image: flutter-todos-web:latest
-        imagePullPolicy: "IfNotPresent"
-        ports:
-        - containerPort: 80
+        - name: simple-todos-app
+          image: simple_todos:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          readinessProbe:
+            httpGet:
+              path: /todos
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /todos
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: todos-web-service
-  namespace: todos-web-ns
-  labels:
-    name: todos-web-service
+  name: simple-todos-web-service
+  namespace: simple-todos-ns
 spec:
+  selector:
+    app: simple-todos-app
   ports:
     - port: 80
       targetPort: 80
-  selector:
-    app: todos-web-app
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: todos-web-port-forwarding
-#  namespace: todos-web-ns
-#  labels:
-#    name: todos-web-port-forwarding
-#spec:
-#  selector:
-#    app: todos-app
-#  ports:
-#    - name: todos-web-http
-#      protocol: TCP
-#      port: 8080
-#      targetPort: 8081
-#  type: NodePort
+
 ---
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: todos-ingress
-  namespace: todos-web-ns
-  labels:
-    name: todos-ingress
+  name: simple-todos-ingress
+  namespace: simple-todos-ns
   annotations:
-    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-#  ingressClassName: nginx-example
+  ingressClassName: nginx
   rules:
     - http:
         paths:
@@ -78,6 +91,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: todos-web-service
+                name: simple-todos-web-service
                 port:
                   number: 80

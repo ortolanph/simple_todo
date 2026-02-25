@@ -12,18 +12,24 @@ A (not so) simple todo made in flutter that will be deployed into a docker Conta
 On a command line, type the following commands: 
 
 ```shell
-flutter clean
-flutter pub get
-flutter build web
-docker login
-docker build -t flutter-todos-web .
-docker run -d -p 8080:80 --name todos-web flutter-todos-web
+make help
+make compile
+
 ```
+
+To see the help of what can be done.
 
 Or, in Windows:
 
 ```powershell
-.\build.ps1
+.\command_help.ps1          - Shows this help
+.\command_compile.ps1       - Compiles the project
+.\command_build.ps1         - Builds the project
+.\command_fix.ps1           - Runs dart analyze and dart fix
+.\command_docker_build.ps1  - Builds the docker image locally
+.\command_docker_run.ps1    - Runs docker locally
+.\command_docker_upload.ps1 - Upload a new version of docker image (requires version parameter)
+.\command_kubernetes.ps1    - Create local Kubernetes deployments with kind
 ```
 
 ## Kubernetes
