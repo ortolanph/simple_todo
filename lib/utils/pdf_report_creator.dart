@@ -70,7 +70,7 @@ class PdfReportCreator extends ReportCreator {
     logger.info("Creating task row");
     return pw.Container(
       child: pw.Padding(
-        padding: pw.EdgeInsets.symmetric(vertical: 10),
+        padding: pw.EdgeInsets.symmetric(vertical: 30),
         child: pw.Row(
           children: [
             pw.Container(
@@ -85,11 +85,26 @@ class PdfReportCreator extends ReportCreator {
               ),
             ),
             pw.SizedBox(width: 10),
-            pw.Text(
-              todo.task,
-              style: pw.TextStyle(
-                fontSize: 10,
-              ),
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  todo.task,
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                  ),
+                ),
+                pw.Padding(
+                  padding: pw.EdgeInsets.symmetric(vertical: 5),
+                  child: pw.Text(
+                    todo.id,
+                    style: pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey,
+                    ),
+                  ),
+                ),
+              ]
             ),
           ],
         ),
