@@ -18,29 +18,39 @@ help:
 	@echo "  k8s            - Publishes to a local k8s"
 
 clean:
+	$(call check_installed,flutter)
 	flutter clean cache
 	flutter clean
 
 dependencies:
+	$(call check_installed,dart)
 	dart pub get
 
 compile: clean dependencies
+	$(call check_installed,flutter)
+	$(call check_installed,dart)
 	dart run build_runner build -d
 
 analyze:
+	$(call check_installed,dart)
 	dart analyze
 
 fix: analyze
+	$(call check_installed,dart)
 	dart fix --apply
 
 build: clean compile
+	$(call check_installed,dart)
+	$(call check_installed,flutter)
 	flutter build web --base-href /
 
 docker-build: build
+	$(call check_installed,docker)
 	docker login
 	docker build -t simple_todos:local .
 
 docker-run: build
+	$(call check_installed,docker)
 	docker run -d -p 8080:80 --name simple_todos_local simple_todos:local
 
 check_next_version:
@@ -53,6 +63,7 @@ check_next_version:
 	fi
 
 docker-publish: check_next_version
+	$(call check_installed,docker)
 	docker login
 	docker build -t simple_todos:$(NEXT_VERSION) .
 	docker tag simple_todos:$(NEXT_VERSION) ortolanph/simple_todos:$(NEXT_VERSION)
